@@ -128,3 +128,11 @@ variable "cpu_credits" {
   description = "The credit option for CPU usage (unlimited or standard)"
   default     = "standard"
 }
+
+variable "provisioner_folder" {
+  description = "The root folder containing provisioning scripts (Ansible, shell-scripts etc) for this instance"
+}
+
+variable "provisioner_entry_script" {
+  description = "The entry script (e.g run.sh or install.sh) which starts the provisioning of this instance"
+}

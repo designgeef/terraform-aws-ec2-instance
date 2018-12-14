@@ -36,6 +36,18 @@ resource "aws_instance" "this" {
 
   tags = "${merge(var.tags, map("Name", var.instance_count > 1 ? format("%s-%d", var.name, count.index+1) : var.name))}"
 
+  provisioner "file" {
+    source = "${var.provisioner_folder}"
+    destination = "/tmp/_provisioning"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/_provisioning/*.sh",
+      "sudo /tmp/${var.provisioner_entry_script}"
+    ]
+  }
+
   lifecycle {
     # Due to several known issues in Terraform AWS provider related to arguments of aws_instance:
     # (eg, https://github.com/terraform-providers/terraform-provider-aws/issues/2036)
@@ -72,6 +84,18 @@ resource "aws_instance" "this_t2" {
   instance_initiated_shutdown_behavior = "${var.instance_initiated_shutdown_behavior}"
   placement_group                      = "${var.placement_group}"
   tenancy                              = "${var.tenancy}"
+
+  provisioner "file" {
+    source = "${var.provisioner_folder}"
+    destination = "/tmp/_provisioning"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/_provisioning/*.sh",
+      "sudo /tmp/${var.provisioner_entry_script}"
+    ]
+  }
 
   credit_specification {
     cpu_credits = "${var.cpu_credits}"
